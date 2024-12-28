@@ -37,5 +37,30 @@
             owner=root
             group=root
             mode=0644
-       - name: restart nginx
-         command: sudo service nginx restart
+
+    - hosts: localhost
+      tasks:
+    - name: Gather network facts
+      ansible.builtin.setup:
+        gather_subset:
+          - network
+
+    - name: Debug the network interfaces
+      debug:
+        var: ansible_facts['ansible_interfaces']
+
+    - name: Set fact for the first interface with an IPv4 address
+      set_fact:
+        my_ip: "{{ ansible_facts[ansible_facts['ansible_interfaces'][0]]['ipv4']['address'] }}"
+
+    - name: Show the IP address
+      debug:
+        var: my_ip
+
+    - name: Copy the files to index destination folder
+      copy:
+        src: /path/to/source
+        dest: /path/to/destination/{{ my_ip }}
+
+    - name: restart nginx
+      command: sudo service nginx restart
