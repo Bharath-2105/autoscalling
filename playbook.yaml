@@ -7,12 +7,12 @@
       todays_date: "{{ ansible_facts['date_time']['date'] }}"
       host_name: "{{ ansible_facts['hostname'] }}"
       fqdn_name: "{{ ansible_facts['fqdn'] }}"
-      ip_address: "{{ ansible_facts['enX0']['ipv4']['address'] }}"
+      ip_address: "{{ ansible_facts['et*']['ipv4']['address'] }}"
     tasks:
        - name: Run Apt Update
-         shell: sudo apt update && sudo apt install -y python3-apt
+         shell: apt update && apt install -y python3-apt
 
-       - name: sudo Install Nginx Server
+       - name: Install Nginx Server
          apt: >
            name=nginx
            state=present
@@ -37,30 +37,5 @@
             owner=root
             group=root
             mode=0644
-
-    - hosts: localhost
-      tasks:
-    - name: Gather network facts
-      ansible.builtin.setup:
-        gather_subset:
-          - network
-
-    - name: Debug the network interfaces
-      debug:
-        var: ansible_facts['ansible_interfaces']
-
-    - name: Set fact for the first interface with an IPv4 address
-      set_fact:
-        my_ip: "{{ ansible_facts[ansible_facts['ansible_interfaces'][0]]['ipv4']['address'] }}"
-
-    - name: Show the IP address
-      debug:
-        var: my_ip
-
-    - name: Copy the files to index destination folder
-      copy:
-        src: /path/to/source
-        dest: /path/to/destination/{{ my_ip }}
-
-    - name: restart nginx
-      command: sudo service nginx restart
+       - name: restart nginx
+         command: service nginx restart
