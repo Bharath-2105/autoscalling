@@ -7,8 +7,7 @@
       todays_date: "{{ ansible_facts['date_time']['date'] }}"
       host_name: "{{ ansible_facts['hostname'] }}"
       fqdn_name: "{{ ansible_facts['fqdn'] }}"
-      ip_address: "{{ ansible_facts['ipv4']['address'] }}"
-      - hosts: localhost
+      ip_address: "{{ ansible_facts['eth0']['ipv4']['address'] }}
   tasks:
     - name: Gather network facts
       ansible.builtin.setup:
