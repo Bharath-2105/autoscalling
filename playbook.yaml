@@ -10,9 +10,9 @@
       ip_address: "{{ ansible_facts['eth0']['ipv4']['address'] }}"
     tasks:
        - name: Run Apt Update
-         shell: apt update && apt install -y python3-apt
+         shell: sudo apt update && apt install -y python3-apt
 
-       - name: Install Nginx Server
+       - name: sudo Install Nginx Server
          apt: >
            name=nginx
            state=present
@@ -38,4 +38,4 @@
             group=root
             mode=0644
        - name: restart nginx
-         command: service nginx restart
+         command: sudo service nginx restart
