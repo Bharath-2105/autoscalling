@@ -7,6 +7,32 @@
       todays_date: "{{ ansible_facts['date_time']['date'] }}"
       host_name: "{{ ansible_facts['hostname'] }}"
       fqdn_name: "{{ ansible_facts['fqdn'] }}"
+      ip_address: "{{ ansible_facts['ipv4']['address'] }}"
+      - hosts: localhost
+  tasks:
+    - name: Gather network facts
+      ansible.builtin.setup:
+        gather_subset:
+          - network
+
+    - name: Debug the network facts
+      debug:
+        var: ansible_facts
+
+    - name: Find the first interface with an IPv4 address
+      set_fact:
+        my_ip: "{{ ansible_facts[ansible_facts['ansible_interfaces'][0]]['ipv4']['address'] }}"
+      when: ansible_facts[ansible_facts['ansible_interfaces'][0]]['ipv4'] is defined
+
+    - name: Show the IP address
+      debug:
+        var: my_ip
+
+    - name: Copy the files to index destination folder
+      copy:
+        src: /path/to/source
+        dest: /path/to/destination/{{ my_ip }}
+
     tasks:
        - name: Run Apt Update
          shell: apt update && apt install -y python3-apt
